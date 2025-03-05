@@ -13,7 +13,7 @@ __all__ = ("async_hello_world", "sync_hello_world")
 async def async_hello_world() -> Dict[str, Any]:  # noqa: UP006
     """Route Handler that outputs hello world."""
     await sleep(0.1)
-    return {"hello": "world"}
+    return {"hello": "word"}
 
 
 @get("/sync", sync_to_thread=False)

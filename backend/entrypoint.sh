@@ -1,1 +1,1 @@
-litestar run --host 0.0.0.0 --port $SERVER_PORT
+exec uvicorn app:app --host 0.0.0.0 --port ${SERVER_PORT} --reload
