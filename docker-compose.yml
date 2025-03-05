@@ -1,0 +1,23 @@
+services:
+  backend:
+    container_name: litestar-backend
+    build: ./backend
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    env_file:
+      - .env
+
+  frontend:
+    container_name: vite-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    ports:
+      - "${VITE_PORT}:${VITE_PORT}"
+    volumes:
+     - ./frontend:/app
+     - /app/node_modules
+    env_file:
+      - .env
+    environment:
+      - NGINX_PORT=${VITE_PORT}
