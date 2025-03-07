@@ -1,1 +1,7 @@
 litestar[standard]
+pydantic
+aiologger
+aiofiles
+psycopg2
+psycopg2-binary
+alembic

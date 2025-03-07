@@ -7,7 +7,7 @@ from aiologger.handlers.streams import AsyncStreamHandler
 from aiologger.levels import LogLevel
 
 
-async def setup_logger():
+def setup_logger() -> Logger:
     # Create logger instance
     logger = Logger(name="api_logger")
 

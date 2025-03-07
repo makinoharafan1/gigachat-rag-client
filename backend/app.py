@@ -1,25 +1,29 @@
-"""Minimal Litestar application."""
 from __future__ import annotations
 
-from asyncio import sleep
-from typing import Any, Dict
-
-from litestar import Litestar, get
-
-__all__ = ("async_hello_world", "sync_hello_world")
+from implements.services.postgres_migrations import PostgresMigrationService
 
 
-@get("/async")
-async def async_hello_world() -> Dict[str, Any]:  # noqa: UP006
-    """Route Handler that outputs hello world."""
-    await sleep(0.1)
-    return {"hello": "word"}
+from utils.psycopg2 import NewPosgtresConnectionPool
+from utils.config import Config, NewConfig
+from utils.logger import setup_logger
+from services.services import Services
+from repositories.repositories import Repositories
+from transport.handler.handler import NewHandler
 
+def getRepositories(storage) -> Repositories:
 
-@get("/sync", sync_to_thread=False)
-def sync_hello_world() -> Dict[str, Any]:  # noqa: UP006
-    """Route Handler that outputs hello world."""
-    return {"hello": "world"}
+    return Repositories()
 
+def getServices(config: Config) -> Services:
 
-app = Litestar(route_handlers=[sync_hello_world, async_hello_world])
+    return Services(migration=PostgresMigrationService(config))
+
+config = NewConfig()
+logger = setup_logger()
+storage = NewPosgtresConnectionPool(config)
+
+repositories = getRepositories(storage=storage)
+services = getServices(config=config)
+
+handler = NewHandler(logger, repositories, services)
+app = handler.CreateApp()
