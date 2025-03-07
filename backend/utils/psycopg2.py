@@ -1,17 +1,17 @@
-import psycopg2
-from psycopg2 import pool
+from psycopg2.pool import SimpleConnectionPool
 
-from utils.config import Config
+from utils.config import AppConfig
 
-def NewPosgtresConnectionPool(config: Config):
-    connectionPool = psycopg2.pool.SimpleConnectionPool(
-        config.storage.minConnections,
-        config.storage.maxConnections,
-        dbname=config.storage.dbName,
-        user=config.storage.dbUser,
-        password=config.storage.dbPassword,
-        host=config.storage.dbHost,
-        port=config.storage.dbPort
+
+def posgtres_connection_pool(config: AppConfig):
+    connection_pool = SimpleConnectionPool(
+        config.postgres_db_min_connections,
+        config.postgres_db_max_connections,
+        dbname=config.postgres_db_name,
+        user=config.postgres_db_username,
+        password=config.postgres_db_password,
+        host=config.postgres_db_host,
+        port=config.postgres_db_port
     )
 
-    return connectionPool
+    return connection_pool
