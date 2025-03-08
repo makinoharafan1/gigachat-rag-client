@@ -1,0 +1,8 @@
+litestar[standard]
+environ-config
+pydantic
+aiologger
+aiofiles
+psycopg2
+psycopg2-binary
+alembic
