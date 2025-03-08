@@ -51,12 +51,12 @@ services:
     image: postgres:latest
     container_name: postgres-database
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB_NAME}
+      POSTGRES_USER: ${POSTGRES_DB_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_DB_PASSWORD}
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
-      - "${DB_PORT}:5432"
+      - "${POSTGRES_DB_PORT}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data/pgdata
     deploy:
@@ -78,5 +78,7 @@ services:
     restart: always
 
 volumes:
+  weaviate_data:
+    driver: local
   pgdata:
     driver: local
