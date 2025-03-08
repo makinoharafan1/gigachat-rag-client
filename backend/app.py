@@ -1,25 +1,33 @@
-"""Minimal Litestar application."""
-from __future__ import annotations
+from litestar import Litestar
+from litestar.di import Provide
 
-from asyncio import sleep
-from typing import Any, Dict
-
-from litestar import Litestar, get
-
-__all__ = ("async_hello_world", "sync_hello_world")
-
-
-@get("/async")
-async def async_hello_world() -> Dict[str, Any]:  # noqa: UP006
-    """Route Handler that outputs hello world."""
-    await sleep(0.1)
-    return {"hello": "word"}
+from implements.services.postgres_migrations import PostgresMigrationService
+from services.services import Services
+from repositories.repositories import Repositories
+from transport.handlers.ping import ping
+from transport.handlers.migration import up_migrations, down_migrations
+from utils.config import config
+from utils.logger import get_logger
 
 
-@get("/sync", sync_to_thread=False)
-def sync_hello_world() -> Dict[str, Any]:  # noqa: UP006
-    """Route Handler that outputs hello world."""
-    return {"hello": "world"}
+def get_repositories() -> Repositories:
+    return Repositories()
 
 
-app = Litestar(route_handlers=[sync_hello_world, async_hello_world])
+def get_services() -> Services:
+    return Services(migration=PostgresMigrationService(config))
+
+
+app = Litestar(
+    route_handlers=[
+        ping(route="ping"),
+        up_migrations(route="migrations/up"),
+        down_migrations(route="migrations/down"),
+    ],
+    dependencies={
+        "repositories": Provide(get_repositories),
+        "services": Provide(get_services),
+        "logger": Provide(get_logger)
+    },
+    debug=True,
+)
