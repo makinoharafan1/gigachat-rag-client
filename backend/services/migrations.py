@@ -1,12 +1,13 @@
 from abc import ABC, abstractmethod
 
+
 class MigrationService(ABC):
     @abstractmethod
-    def Up(self):
+    def up(self):
         """Запускает все миграции"""
         pass
 
     @abstractmethod
-    def DownToBase(self):
+    def down_to_base(self):
         """Откатывает все миграции"""
         pass

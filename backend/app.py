@@ -1,29 +1,33 @@
-from __future__ import annotations
+from litestar import Litestar
+from litestar.di import Provide
 
 from implements.services.postgres_migrations import PostgresMigrationService
-
-
-from utils.psycopg2 import NewPosgtresConnectionPool
-from utils.config import Config, NewConfig
-from utils.logger import setup_logger
 from services.services import Services
 from repositories.repositories import Repositories
-from transport.handler.handler import NewHandler
+from transport.handlers.ping import ping
+from transport.handlers.migration import up_migrations, down_migrations
+from utils.config import config
+from utils.logger import get_logger
 
-def getRepositories(storage) -> Repositories:
 
+def get_repositories() -> Repositories:
     return Repositories()
 
-def getServices(config: Config) -> Services:
 
+def get_services() -> Services:
     return Services(migration=PostgresMigrationService(config))
 
-config = NewConfig()
-logger = setup_logger()
-storage = NewPosgtresConnectionPool(config)
 
-repositories = getRepositories(storage=storage)
-services = getServices(config=config)
-
-handler = NewHandler(logger, repositories, services)
-app = handler.CreateApp()
+app = Litestar(
+    route_handlers=[
+        ping(route="ping"),
+        up_migrations(route="migrations/up"),
+        down_migrations(route="migrations/down"),
+    ],
+    dependencies={
+        "repositories": Provide(get_repositories),
+        "services": Provide(get_services),
+        "logger": Provide(get_logger)
+    },
+    debug=True,
+)
