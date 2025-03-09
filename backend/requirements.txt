@@ -6,6 +6,7 @@
 #
 #    pip-compile requirements.in
 #
+requests
 aiofiles==24.1.0
     # via -r requirements.in
 aiologger==0.7.0
