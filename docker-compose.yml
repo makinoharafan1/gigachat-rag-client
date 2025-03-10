@@ -8,6 +8,9 @@ services:
      - ./backend:/app
     env_file:
       - .env
+    depends_on:
+      - db
+      - weaviate
 
   frontend:
     container_name: vite-frontend
@@ -39,12 +42,12 @@ services:
       - "${WEAVIATE_PORT}:${WEAVIATE_PORT}"
       - 50051:50051
     restart: on-failure:0
-    volumes:
-      - weaviate_data:/var/lib/weaviate
+    # volumes:
+    #   - weaviate_data:/var/lib/weaviate
     environment:
       QUERY_DEFAULTS_LIMIT: 25
       AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
-      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      # PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
       CLUSTER_HOSTNAME: 'node1'
 
   db:
@@ -78,7 +81,7 @@ services:
     restart: always
 
 volumes:
-  weaviate_data:
-    driver: local
+  # weaviate_data:
+  #   driver: local
   pgdata:
     driver: local
