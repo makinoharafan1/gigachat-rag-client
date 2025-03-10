@@ -72,7 +72,7 @@ class GigaChatAPI(ExternalModelsAPIService):
 
         return result
 
-    def get_answer(self, query, system_prompt, documents, temperature) -> str:
+    def get_answer(self, query, system_prompt, documents) -> str:
         if self.check_expires_time():
             self.update_access_token()
 
@@ -91,7 +91,7 @@ class GigaChatAPI(ExternalModelsAPIService):
                         "content": f"{query} + {documents}"
                     }
                 ],
-                "n": temperature,
+                "n": 1,
                 "stream": False,
                 "max_tokens": 512,
                 "repetition_penalty": 1.0,
