@@ -1,11 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from entities.agent import Agent
+from entities.agent_model import Agent
 
 
-class AgentRepo(ABC):
-
+class AgentRepository(ABC):
     @abstractmethod
     def get_base_info_by_filters(self, page: int, limit: int) -> List[Agent]:
         """Выдаёт список агентов удовлетворяющих фильтрам"""
